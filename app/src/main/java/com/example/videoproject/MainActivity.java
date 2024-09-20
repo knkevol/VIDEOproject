@@ -1,9 +1,12 @@
 package com.example.videoproject;
 
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,9 +15,11 @@ public class MainActivity extends AppCompatActivity {
 
     private VideoView videoView;
     private Button playPauseButton;
+    private ImageButton fullScreenButton;
     private SeekBar videoSeekBar;
     private boolean isPlaying = false;
     private int currentVideoIndex = 0;
+    private boolean isFullScreen = false;
     private final Handler handler = new Handler();
 
     // raw 리소스에 있는 비디오 파일 ID
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         videoView = findViewById(R.id.videoView);
         Button beforeButton = findViewById(R.id.beforeButton);
         Button nextButton = findViewById(R.id.nextButton);
+        fullScreenButton = findViewById(R.id.fullScreenButton);
         playPauseButton = findViewById(R.id.playPauseButton);
         videoSeekBar = findViewById(R.id.videoSeekBar);
 
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         beforeButton.setOnClickListener(view -> playPreviousVideo());
         nextButton.setOnClickListener(view -> playNextVideo());
+        fullScreenButton.setOnClickListener(view -> toggleFullScreen());
 
         videoView.setOnCompletionListener(mp -> playNextVideo());
 
@@ -116,5 +123,21 @@ public class MainActivity extends AppCompatActivity {
             videoSeekBar.setProgress(videoView.getCurrentPosition());
             handler.postDelayed(this::updateSeekBar, 1000); // 1초마다 업데이트
         }
+    }
+
+    private void toggleFullScreen() {
+        if (isFullScreen) {
+            // 전체 화면 해제
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);// 세로 모드로 전환
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);// 세로 모드로 전환_원본
+            fullScreenButton.setImageResource(R.drawable.fullscreen);
+        } else {
+            // 전체 화면으로 전환
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // 가로 모드로 전환
+            fullScreenButton.setImageResource(R.drawable.fullscreen);
+        }
+        isFullScreen = !isFullScreen;
     }
 }
