@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.VideoView;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPlaying = false;
     private int currentVideoIndex = 0;
     private boolean isFullScreen = false;
+    private FrameLayout videoFrame;
     private final Handler handler = new Handler();
 
     // raw 리소스에 있는 비디오 파일 ID
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         fullScreenButton = findViewById(R.id.fullScreenButton);
         playPauseButton = findViewById(R.id.playPauseButton);
         videoSeekBar = findViewById(R.id.videoSeekBar);
+        videoFrame = findViewById(R.id.videoFrame);
 
         // Play/Pause 버튼 동작 설정
         playPauseButton.setOnClickListener(view -> {

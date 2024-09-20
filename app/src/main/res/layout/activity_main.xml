@@ -2,8 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_gravity="center">
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/videoFrame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
     <!-- VideoView가 화면의 대부분을 차지 -->
     <VideoView
@@ -12,16 +17,11 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_gravity="bottom">
 
             <!-- SeekBar를 통해 동영상 진행 표시 -->
             <SeekBar
@@ -39,6 +39,8 @@
                 android:layout_margin="10dp"
                 android:background="@drawable/fullscreen" />
         </LinearLayout>
+
+    </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,5 +71,4 @@
                 android:text="@string/next_text"
                 android:layout_weight="1"/>
         </LinearLayout>
-    </LinearLayout>
 </LinearLayout>
