@@ -21,7 +21,10 @@ public class MainActivity extends AppCompatActivity {
     private final int[] videoResources = {
             R.raw.video1,
             R.raw.video2,
-            R.raw.video3
+            R.raw.video3,
+            R.raw.video4,
+            R.raw.video5,
+            R.raw.video6
     };
 
     @Override
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         videoView = findViewById(R.id.videoView);
+        Button beforeButton = findViewById(R.id.beforeButton);
+        Button nextButton = findViewById(R.id.nextButton);
         playPauseButton = findViewById(R.id.playPauseButton);
         videoSeekBar = findViewById(R.id.videoSeekBar);
 
@@ -45,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
             }
             isPlaying = !isPlaying;
         });
+
+        beforeButton.setOnClickListener(view -> playPreviousVideo());
+        nextButton.setOnClickListener(view -> playNextVideo());
 
         videoView.setOnCompletionListener(mp -> playNextVideo());
 
@@ -68,6 +76,19 @@ public class MainActivity extends AppCompatActivity {
         setVideo();
     }
 
+    private void playPreviousVideo() {
+        currentVideoIndex--;
+        if (currentVideoIndex < 0) {
+            currentVideoIndex = videoResources.length - 1; // 마지막 비디오로 이동
+        }
+
+        videoSeekBar.setProgress(0); // SeekBar 초기화
+        setVideo(); // 이전 비디오 설정
+        videoView.start(); // 자동 재생
+        playPauseButton.setText(getString(R.string.pause_text)); // 버튼 텍스트 업데이트
+        isPlaying = true; // 재생 상태 업데이트
+    }
+
     private void setVideo() {
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + videoResources[currentVideoIndex]);
         videoView.setVideoURI(videoUri);
@@ -86,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
         setVideo();
         videoView.start();
- //       playPauseButton.setText(getString(R.string.play_text));
         isPlaying = true;
     }
 
