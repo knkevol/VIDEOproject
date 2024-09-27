@@ -43,7 +43,11 @@ public class MainActivity extends AppCompatActivity {
         Button nextButton = findViewById(R.id.nextButton);
         fullScreenButton = findViewById(R.id.fullScreenButton);
         playPauseButton = findViewById(R.id.playPauseButton);
-        videoSeekBar = findViewById(R.id.videoSeekBar);
+        videoSeekBar = (SeekBar) findViewById(R.id.videoSeekBar);
+        videoSeekBar.setMax(10); // 시크바 최대값 설정
+        videoSeekBar.setProgress(3); // 초기 시크바 값 설정
+
+
         videoFrame = findViewById(R.id.videoFrame);
 
         playPauseButton.setOnClickListener(view -> {
@@ -63,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
         fullScreenButton.setOnClickListener(view -> toggleFullScreen());
 
         videoView.setOnCompletionListener(mp -> playNextVideo());
+//        videoView.setOnPreparedListener(mp -> {
+//                    int videoWidth = mp.getVideoWidth();
+//                    int videoHeight = mp.getVideoHeight();
+//                });
 
         // SeekBar 위치 = 동영상 재생 위치
         videoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -89,8 +97,6 @@ public class MainActivity extends AppCompatActivity {
         if (currentVideoIndex < 0) {
             currentVideoIndex = videoResources.length - 1; // 마지막 비디오로 이동
         }
-
-        videoSeekBar.setProgress(0); // SeekBar 초기화
         setVideo(); // 이전 비디오 설정
         videoView.start(); // 자동 재생
         playPauseButton.setText(getString(R.string.pause_text));
@@ -102,7 +108,31 @@ public class MainActivity extends AppCompatActivity {
         videoView.setVideoURI(videoUri);
 
         // 재생 바 길이 설정 (비디오 준비 완료 시)
-        videoView.setOnPreparedListener(mp -> videoSeekBar.setMax(videoView.getDuration()));
+        videoView.setOnPreparedListener(mp -> {
+            videoSeekBar.setMax(videoView.getDuration());
+            adjustVideoAspectRatio(mp.getVideoWidth(), mp.getVideoHeight());
+        });
+    }
+
+    private void adjustVideoAspectRatio(int videoWidth, int videoHeight) {
+        float videoProportion = (float) videoWidth / (float) videoHeight;
+
+        int screenWidth = videoFrame.getWidth();
+        int screenHeight = videoFrame.getHeight();
+        float screenProportion = (float) screenWidth / (float) screenHeight;
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) videoView.getLayoutParams();
+        if (videoProportion > screenProportion)
+        {
+            lp.width = screenWidth;
+            lp.height = (int) ((float) screenWidth / videoProportion);
+        }
+        else
+        {
+            lp.width = (int) (videoProportion * (float) screenHeight);
+            lp.height = screenHeight;
+        }
+        videoView.setLayoutParams(lp);
     }
 
     private void playNextVideo() {
@@ -126,20 +156,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toggleFullScreen() {
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoView.getLayoutParams();
         if (isFullScreen) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoView.getLayoutParams();
             params.width = FrameLayout.LayoutParams.MATCH_PARENT;
             params.height = FrameLayout.LayoutParams.WRAP_CONTENT;
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            fullScreenButton.setImageResource(R.drawable.fullscreen);
+            videoView.setLayoutParams(params);
+
+            fullScreenButton.setImageResource(R.drawable.baseline_fullscreen_24);
         } else {
             // full
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoView.getLayoutParams();
             params.width = FrameLayout.LayoutParams.MATCH_PARENT;
             params.height = FrameLayout.LayoutParams.MATCH_PARENT;
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            fullScreenButton.setImageResource(R.drawable.fullscreen);
+            videoView.setLayoutParams(params);
+
+            fullScreenButton.setImageResource(R.drawable.baseline_fullscreen_24);
         }
-        videoView.setLayoutParams(params);
         isFullScreen = !isFullScreen;   // 전체 화면 상태 토글
     }
 }

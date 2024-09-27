@@ -7,7 +7,9 @@
     <FrameLayout
         android:id="@+id/videoFrame"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#000000"
         android:layout_weight="1">
 
     <!-- VideoView가 화면의 대부분을 차지 -->
@@ -24,21 +26,26 @@
             android:orientation="horizontal"
             android:layout_gravity="bottom">
 
-            <!-- SeekBar를 통해 동영상 진행 표시 -->
             <SeekBar
                 android:id="@+id/videoSeekBar"
-                android:layout_width="370dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:thumb="@android:color/transparent"
+                android:layout_weight="0.7"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="8dp"
+                android:thumb="@drawable/custom_seekbar_thumb"
+                android:progressDrawable="@drawable/custom_seekbar_progress"
+                android:splitTrack="false"
                 android:layout_gravity="center"/>
 
-            <!-- Full Screen 버튼 -->
             <ImageButton
                 android:id="@+id/fullScreenButton"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/fullscreen" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/baseline_fullscreen_24" />
         </LinearLayout>
 
     </FrameLayout>
