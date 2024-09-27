@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout videoFrame;
     private final Handler handler = new Handler();
 
-    // raw 리소스에 있는 비디오 파일 ID
     private final int[] videoResources = {
             R.raw.video1,
             R.raw.video2,
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         videoSeekBar = findViewById(R.id.videoSeekBar);
         videoFrame = findViewById(R.id.videoFrame);
 
-        // Play/Pause 버튼 동작 설정
         playPauseButton.setOnClickListener(view -> {
             if (isPlaying) {
                 videoView.pause();
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         videoView.setOnCompletionListener(mp -> playNextVideo());
 
-        // SeekBar 변경 시 동영상 재생 위치 변경
+        // SeekBar 위치 = 동영상 재생 위치
         videoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -95,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         videoSeekBar.setProgress(0); // SeekBar 초기화
         setVideo(); // 이전 비디오 설정
         videoView.start(); // 자동 재생
-        playPauseButton.setText(getString(R.string.pause_text)); // 버튼 텍스트 업데이트
-        isPlaying = true; // 재생 상태 업데이트
+        playPauseButton.setText(getString(R.string.pause_text));
+        isPlaying = true;
     }
 
     private void setVideo() {
@@ -120,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         isPlaying = true;
     }
 
-    // SeekBar를 1초마다 업데이트
     private void updateSeekBar() {
         if (isPlaying) {
             videoSeekBar.setProgress(videoView.getCurrentPosition());
@@ -129,18 +126,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toggleFullScreen() {
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoView.getLayoutParams();
         if (isFullScreen) {
-            // 전체 화면 해제
+            params.width = FrameLayout.LayoutParams.MATCH_PARENT;
+            params.height = FrameLayout.LayoutParams.WRAP_CONTENT;
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);// 세로 모드로 전환
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);// 세로 모드로 전환_원본
             fullScreenButton.setImageResource(R.drawable.fullscreen);
         } else {
-            // 전체 화면으로 전환
+            // full
+            params.width = FrameLayout.LayoutParams.MATCH_PARENT;
+            params.height = FrameLayout.LayoutParams.MATCH_PARENT;
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // 가로 모드로 전환
             fullScreenButton.setImageResource(R.drawable.fullscreen);
         }
-        isFullScreen = !isFullScreen;
+        videoView.setLayoutParams(params);
+        isFullScreen = !isFullScreen;   // 전체 화면 상태 토글
     }
 }
