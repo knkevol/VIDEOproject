@@ -67,10 +67,6 @@ public class MainActivity extends AppCompatActivity {
         fullScreenButton.setOnClickListener(view -> toggleFullScreen());
 
         videoView.setOnCompletionListener(mp -> playNextVideo());
-//        videoView.setOnPreparedListener(mp -> {
-//                    int videoWidth = mp.getVideoWidth();
-//                    int videoHeight = mp.getVideoHeight();
-//                });
 
         // SeekBar 위치 = 동영상 재생 위치
         videoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -169,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // full
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoView.getLayoutParams();
             params.width = FrameLayout.LayoutParams.MATCH_PARENT;
